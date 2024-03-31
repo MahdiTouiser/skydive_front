@@ -47,7 +47,7 @@ import AdminUserDocument from './pages/adminPanel/pages/userManagement/userDetai
 import AdminJumpRecords from './pages/adminPanel/pages/userManagement/userDetail/AdminJumpRecords'
 import AdminUserWallet from './pages/adminPanel/pages/userManagement/userDetail/AdminUserWallet'
 import EditUserPage from './pages/adminPanel/pages/userManagement/EditUserPage'
-import ReportsGrid from './pages/adminPanel/pages/reports/ReportsGrid'
+import ReportsGrid from './pages/adminPanel/pages/reports/TicketsReportGrid'
 import PaymentStatus from './pages/Payment/PaymentStatus'
 
 function App() {
