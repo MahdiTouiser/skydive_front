@@ -6,6 +6,7 @@ import SDSelect from '../../../../components/shared/Select'
 import useAPi from '../../../../hooks/useApi'
 import { BaseResponse } from '../../../../models/shared.models'
 import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models'
+import SDTooltip from '../../../../components/shared/Tooltip'
 
 const TicketsReportHeader: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
@@ -30,7 +31,6 @@ const TicketsReportHeader: React.FC = () => {
           url: '/SkyDiveEvents',
         },
         response => {
-          // Extract titles from the API response
           const eventTitles = response.content.map(event => event.title)
           setTitles(eventTitles)
         }
@@ -70,9 +70,16 @@ const TicketsReportHeader: React.FC = () => {
             <label htmlFor="search" className="pl-1 text-sm">
               جستجو:
             </label>
-            <div className="mr-1">
-              <SearchInput id="search" onSubmit={onSearchTermChange} searchTerm={searchTerm} placeholder="نام، نام خانوادگی، کد ملی" />
-            </div>
+            <SDTooltip content="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر" trigger="hover" placement="bottom" className="flex self-end">
+              <div className="mr-1 w-60">
+                <SearchInput
+                  id="search"
+                  onSubmit={onSearchTermChange}
+                  searchTerm={searchTerm}
+                  placeholder="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر "
+                />
+              </div>
+            </SDTooltip>
           </div>
         </div>
       </div>

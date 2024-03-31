@@ -71,7 +71,7 @@ const PaymentStatus: React.FC = () => {
               </div>
 
               <div className="mb-4 flex justify-between px-1">
-                <p className="font-semibold">نوع بلیط :</p>
+                <p className="font-semibold">نوع بلیت :</p>
                 <p>
                   {verifyApiResponse.content.items.map((item, index) => (
                     <p key={index} className="mr-2">
@@ -81,7 +81,7 @@ const PaymentStatus: React.FC = () => {
                 </p>
               </div>
               <div className="mb-4 flex justify-between px-1">
-                <p className="font-semibold">شماره بلیط :</p>
+                <p className="font-semibold">شماره بلیت :</p>
                 <p>
                   {verifyApiResponse.content.items.map((item, index) => (
                     <p key={index} className="mr-2">
