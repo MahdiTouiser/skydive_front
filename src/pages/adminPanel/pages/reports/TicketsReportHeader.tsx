@@ -7,12 +7,14 @@ import useAPi from '../../../../hooks/useApi'
 import { BaseResponse } from '../../../../models/shared.models'
 import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models'
 import SDTooltip from '../../../../components/shared/Tooltip'
+import SDSpinner from '../../../../components/shared/Spinner'
 
 const TicketsReportHeader: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [minDate, setMinDate] = useState<string>('')
   const [maxDate, setMaxDate] = useState<string>('')
   const [titles, setTitles] = useState<string[]>([])
+  const isDateSelected = minDate !== '' && maxDate !== ''
 
   const onSearchTermChange = useCallback((term: string) => {
     setSearchTerm(term)
@@ -22,24 +24,28 @@ const TicketsReportHeader: React.FC = () => {
     console.log('mahdi')
   }
 
-  const { sendRequest } = useAPi<null, BaseResponse<SkyDiveEvent[]>>()
+  const { sendRequest, isPending } = useAPi<null, BaseResponse<SkyDiveEvent[]>>()
 
   useEffect(() => {
     const fetchEvents = () => {
-      sendRequest(
-        {
-          url: '/SkyDiveEvents',
-        },
-        response => {
-          const eventTitles = response.content.map(event => event.title)
-          setTitles(eventTitles)
-        }
-      )
+      if (isDateSelected) {
+        sendRequest(
+          {
+            url: '/SkyDiveEvents',
+            params: {
+              start: minDate,
+              end: maxDate,
+            },
+          },
+          response => {
+            const eventTitles = response.content.map(event => event.title)
+            setTitles(eventTitles)
+          }
+        )
+      }
     }
     fetchEvents()
-  }, [sendRequest])
-
-  const isDateSelected = minDate !== '' && maxDate !== ''
+  }, [minDate, maxDate, sendRequest])
 
   return (
     <>
@@ -56,14 +62,20 @@ const TicketsReportHeader: React.FC = () => {
           <div className="mr-4 flex items-center pb-2">
             <label className="pl-1 text-sm"> عنوان رویداد :</label>
             <div className="mr-1">
-              <SDSelect>
-                <option value="all">همه</option>
-                {titles.map((title, index) => (
-                  <option key={index} value={title}>
-                    {title}
-                  </option>
-                ))}
-              </SDSelect>
+              {isPending ? (
+                <div className="flex justify-center">
+                  <SDSpinner size={5} color="blue"></SDSpinner>
+                </div>
+              ) : (
+                <SDSelect disabled={!isDateSelected}>
+                  <option value="all">همه</option>
+                  {titles.map((title, index) => (
+                    <option key={index} value={title}>
+                      {title}
+                    </option>
+                  ))}
+                </SDSelect>
+              )}
             </div>
           </div>
           <div className="mr-4 flex items-center justify-center pb-2">
