@@ -111,7 +111,7 @@ function App() {
               <Route Component={AdminFlightsPage} path=":eventId/flights"></Route>
             </Route>
             <Route Component={Settings} path="settings"></Route>
-            <Route Component={SendMessage} path="sendMessage"></Route>
+            <Route Component={SendMessage} path="send-message"></Route>
             <Route Component={Reports} path="reports">
               <Route Component={ReportsGrid} path="tickets"></Route>
             </Route>

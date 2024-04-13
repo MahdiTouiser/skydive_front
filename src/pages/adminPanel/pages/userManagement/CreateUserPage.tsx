@@ -3,31 +3,31 @@ import UserForm from "../../../../components/adminPanel/userManagement/UserForm"
 import SDCard from "../../../../components/shared/Card";
 import useAPi from "../../../../hooks/useApi";
 import { BaseResponse } from "../../../../models/shared.models";
-import {  UserRequest } from "../../../../models/usermanagement.models";
+import { UserRequest } from "../../../../models/usermanagement.models";
 import { toast } from "react-toastify";
 
 const CreateUserPage: React.FC = () => {
 
-    const {sendRequest} = useAPi<UserRequest,BaseResponse<null>>();
-    const navigate = useNavigate();
+  const { sendRequest } = useAPi<UserRequest, BaseResponse<null>>();
+  const navigate = useNavigate();
 
-    function onSubmit(data:UserRequest, afterSubmit:()=>void){
-        sendRequest({
-            url:'/Admin/CreateUser',
-            method: 'post',
-            data: {
-                ...data,
-                email: data.email || null
-            }
-        },(response)=>{
-            toast.success(response.message);
-            afterSubmit();
-            navigate('/admin/users')
-        },(error)=>{
-            toast.error(error?.message);
-            afterSubmit();
-        })
-    }
+  function onSubmit(data: UserRequest, afterSubmit: () => void) {
+    sendRequest({
+      url: '/Admin/CreateUser',
+      method: 'post',
+      data: {
+        ...data,
+        email: data.email || null
+      }
+    }, (response) => {
+      toast.success(response.message);
+      afterSubmit();
+      navigate('/admin/users')
+    }, (error) => {
+      toast.error(error?.message);
+      afterSubmit();
+    })
+  }
 
   return (
     <SDCard className="pt-0 px-0 pb-2 border border-blue-100">

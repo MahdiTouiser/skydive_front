@@ -67,7 +67,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: 'sendMessage',
+      path: 'send-message',
     },
     {
       title: 'تنظیمات',

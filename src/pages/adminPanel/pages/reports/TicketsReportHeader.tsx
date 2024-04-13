@@ -1,28 +1,31 @@
 import { useCallback, useEffect, useState } from 'react'
+import SDButton from '../../../../components/shared/Button'
 import DateRangeFilter from '../../../../components/shared/DateRangeFilter'
 import SearchInput from '../../../../components/shared/SearchInput'
-import SDButton from '../../../../components/shared/Button'
 import SDSelect from '../../../../components/shared/Select'
+import SDSpinner from '../../../../components/shared/Spinner'
+import SDTooltip from '../../../../components/shared/Tooltip'
 import useAPi from '../../../../hooks/useApi'
 import { BaseResponse } from '../../../../models/shared.models'
 import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models'
-import SDTooltip from '../../../../components/shared/Tooltip'
-import SDSpinner from '../../../../components/shared/Spinner'
 
-const TicketsReportHeader: React.FC = () => {
+interface TicketsReportHeaderProps {
+  onGetReport: () => void;
+}
+
+const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [minDate, setMinDate] = useState<string>('')
   const [maxDate, setMaxDate] = useState<string>('')
   const [titles, setTitles] = useState<string[]>([])
+
   const isDateSelected = minDate !== '' && maxDate !== ''
 
   const onSearchTermChange = useCallback((term: string) => {
     setSearchTerm(term)
   }, [])
 
-  const getReport = () => {
-    console.log('mahdi')
-  }
+
 
   const { sendRequest, isPending } = useAPi<null, BaseResponse<SkyDiveEvent[]>>()
 
@@ -52,7 +55,7 @@ const TicketsReportHeader: React.FC = () => {
       <div className="flex justify-between gap-4 xl:basis-11/12">
         <div className="flex flex-wrap">
           <div className="ml-8 flex items-center justify-center pb-2">
-            <SDButton color="success" onClick={getReport} disabled={!isDateSelected}>
+            <SDButton color="success" onClick={onGetReport} disabled={!isDateSelected}>
               تهیه گزارش
             </SDButton>
           </div>
