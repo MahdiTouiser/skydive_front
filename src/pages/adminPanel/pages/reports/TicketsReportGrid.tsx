@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import Grid from '../../../../components/shared/Grid/Grid';
 import { ColDef, GridGetData, GridRef } from '../../../../components/shared/Grid/grid.types';
-import SDSpinner from '../../../../components/shared/Spinner';
 import useAPi from '../../../../hooks/useApi';
 import { TicketsReport } from '../../../../models/reports.models';
 import { BaseResponse } from '../../../../models/shared.models';
@@ -14,8 +13,7 @@ interface TicketsReportGridProps {
 const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => {
     const gridRef = useRef<GridRef>(null);
 
-    const { sendRequest, isPending } = useAPi<null, BaseResponse<TicketsReport[]>>();
-
+    const { sendRequest } = useAPi<null, BaseResponse<TicketsReport[]>>();
     const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
             field: 'eventCode',
@@ -105,7 +103,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => 
                     },
                     method: 'post',
                     data: {
-                        eventsId: [selectedId],
+                        eventsId: [selectedId]
                     },
                 },
                 (response) => {
@@ -119,14 +117,8 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => 
 
     return (
         <>
-            {isPending ? (
-                <div className="my-12 flex justify-center">
-                    <SDSpinner size={20} color="blue" />
-                </div>
-            ) : (
-                <Grid<TicketsReport> getData={fetchEvents} rowActions={{ remove: true }}
-                    colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
-            )}
+            <Grid<TicketsReport> getData={fetchEvents} rowActions={{ remove: true }}
+                colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
         </>
     );
 };

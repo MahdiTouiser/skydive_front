@@ -66,18 +66,14 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
       }
     };
     fetchEvents();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minDate, maxDate, sendRequest]);
 
   return (
     <>
       <div className="flex justify-between gap-4 xl:basis-11/12">
         <div className="flex flex-wrap">
-          <div className="ml-8 flex items-center justify-center pb-2">
-            <SDButton color="success" onClick={handleGetReport} disabled={!isDateSelected || isPending}>
-              تهیه گزارش
-            </SDButton>
-          </div>
+
           <DateRangeFilter
             label="تاریخ"
             fromDate={minDate}
@@ -129,6 +125,11 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
                 />
               </div>
             </SDTooltip>
+          </div>
+          <div className="flex items-center justify-center pb-2 mr-8">
+            <SDButton color="success" onClick={handleGetReport} disabled={!isDateSelected || isPending}>
+              تهیه گزارش
+            </SDButton>
           </div>
         </div>
       </div>
