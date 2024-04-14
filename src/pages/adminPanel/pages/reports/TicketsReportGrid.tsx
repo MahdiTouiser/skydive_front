@@ -1,13 +1,22 @@
-import { useRef, useState } from 'react'
-import Grid from '../../../../components/shared/Grid/Grid'
-import { ColDef, GridRef } from '../../../../components/shared/Grid/grid.types'
-import SDSpinner from '../../../../components/shared/Spinner'
-import { UserTransaction } from '../../../../models/transactions.models'
+import { useCallback, useRef, useState } from 'react';
+import Grid from '../../../../components/shared/Grid/Grid';
+import { ColDef, GridGetData, GridRef } from '../../../../components/shared/Grid/grid.types';
+import SDSpinner from '../../../../components/shared/Spinner';
+import useAPi from '../../../../hooks/useApi';
+import { TicketsReport } from '../../../../models/reports.models';
+import { BaseResponse } from '../../../../models/shared.models';
 
-const TicketsReportGrid = () => {
-    const gridRef = useRef<GridRef>(null)
+interface TicketsReportGridProps {
+    selectedId: string;
+}
 
-    const [colDefs] = useState<ColDef<UserTransaction>[]>([
+
+const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => {
+    const gridRef = useRef<GridRef>(null);
+
+    const { sendRequest, isPending } = useAPi<null, BaseResponse<TicketsReport[]>>();
+
+    const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
             field: 'eventCode',
             headerName: 'کد رویداد',
@@ -81,14 +90,46 @@ const TicketsReportGrid = () => {
             sortable: true,
         },
     ])
+
+    const fetchEvents = useCallback<GridGetData<TicketsReport>>(
+        (gridParams, setRows) => {
+            sendRequest(
+                {
+                    url: '/Reports/TicketsReport',
+                    params: {
+                        pageSize: gridParams.pageSize,
+                        pageIndex: gridParams.pageIndex,
+                        orderby: gridParams.sorts
+                            .map((item) => `${item.field} ${item.sort}`)
+                            .join(","),
+                    },
+                    method: 'post',
+                    data: {
+                        eventsId: [selectedId],
+                    },
+                },
+                (response) => {
+                    const result = response.content;
+                    console.log(result);
+                    setRows(result, response.total);
+                },
+            );
+        }, [sendRequest, selectedId]
+    );
+
     return (
         <>
-            <div className="my-12 flex justify-center">
-                <SDSpinner size={20} color="blue"></SDSpinner>
-            </div>
-            <Grid<UserTransaction> colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
+            {isPending ? (
+                <div className="my-12 flex justify-center">
+                    <SDSpinner size={20} color="blue" />
+                </div>
+            ) : (
+                <Grid<TicketsReport> getData={fetchEvents} rowActions={{ remove: true }}
+                    colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
+            )}
         </>
-    )
-}
+    );
+};
 
-export default TicketsReportGrid
+export default TicketsReportGrid;
+

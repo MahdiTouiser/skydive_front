@@ -1,4 +1,4 @@
-export interface reportTickets {
+export interface TicketsReport {
     eventCode: number,
     eventTitle: string,
     eventDate: string,

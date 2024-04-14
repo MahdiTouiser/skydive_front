@@ -1,33 +1,49 @@
-import { useCallback, useEffect, useState } from 'react'
-import SDButton from '../../../../components/shared/Button'
-import DateRangeFilter from '../../../../components/shared/DateRangeFilter'
-import SearchInput from '../../../../components/shared/SearchInput'
-import SDSelect from '../../../../components/shared/Select'
-import SDSpinner from '../../../../components/shared/Spinner'
-import SDTooltip from '../../../../components/shared/Tooltip'
-import useAPi from '../../../../hooks/useApi'
-import { BaseResponse } from '../../../../models/shared.models'
-import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models'
+import React, { useCallback, useEffect, useState } from 'react';
+import SDButton from '../../../../components/shared/Button';
+import DateRangeFilter from '../../../../components/shared/DateRangeFilter';
+import SearchInput from '../../../../components/shared/SearchInput';
+import SDSelect from '../../../../components/shared/Select';
+import SDSpinner from '../../../../components/shared/Spinner';
+import SDTooltip from '../../../../components/shared/Tooltip';
+import useAPi from '../../../../hooks/useApi';
+import { BaseResponse } from '../../../../models/shared.models';
+import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models';
 
 interface TicketsReportHeaderProps {
-  onGetReport: () => void;
+  onGetReport: (id: string) => void;
 }
 
 const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('')
-  const [minDate, setMinDate] = useState<string>('')
-  const [maxDate, setMaxDate] = useState<string>('')
-  const [titles, setTitles] = useState<string[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [minDate, setMinDate] = useState<string>('');
+  const [maxDate, setMaxDate] = useState<string>('');
+  const [titles, setTitles] = useState<string[]>([]);
+  const [ids, setIds] = useState<string[]>([]);
+  const [selectedOptionId, setSelectedOptionId] = useState<string>('');
 
-  const isDateSelected = minDate !== '' && maxDate !== ''
+  const handleGetReport = () => {
+    onGetReport(selectedOptionId);
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTitle = event.target.value;
+    const selectedIndex = titles.indexOf(selectedTitle);
+    if (selectedIndex !== -1) {
+      const selectedId = ids[selectedIndex];
+      setSelectedOptionId(selectedId);
+    }
+  };
+
+
+
+
+  const isDateSelected = minDate !== '' && maxDate !== '';
 
   const onSearchTermChange = useCallback((term: string) => {
-    setSearchTerm(term)
-  }, [])
+    setSearchTerm(term);
+  }, []);
 
-
-
-  const { sendRequest, isPending } = useAPi<null, BaseResponse<SkyDiveEvent[]>>()
+  const { sendRequest, isPending } = useAPi<null, BaseResponse<SkyDiveEvent[]>>();
 
   useEffect(() => {
     const fetchEvents = () => {
@@ -41,25 +57,34 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
             },
           },
           response => {
-            const eventTitles = response.content.map(event => event.title)
-            setTitles(eventTitles)
+            const eventTitles = response.content.map(event => event.title);
+            const eventIds = response.content.map(event => event.id);
+            setTitles(eventTitles);
+            setIds(eventIds);
           }
-        )
+        );
       }
-    }
-    fetchEvents()
-  }, [minDate, maxDate, sendRequest])
+    };
+    fetchEvents();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minDate, maxDate, sendRequest]);
 
   return (
     <>
       <div className="flex justify-between gap-4 xl:basis-11/12">
         <div className="flex flex-wrap">
           <div className="ml-8 flex items-center justify-center pb-2">
-            <SDButton color="success" onClick={onGetReport} disabled={!isDateSelected}>
+            <SDButton color="success" onClick={handleGetReport} disabled={!isDateSelected || isPending}>
               تهیه گزارش
             </SDButton>
           </div>
-          <DateRangeFilter label="تاریخ" fromDate={minDate} toDate={maxDate} onChangeFromDate={setMinDate} onChangeToDate={setMaxDate} />
+          <DateRangeFilter
+            label="تاریخ"
+            fromDate={minDate}
+            toDate={maxDate}
+            onChangeFromDate={setMinDate}
+            onChangeToDate={setMaxDate}
+          />
         </div>
         <div className="flex">
           <div className="mr-4 flex items-center pb-2">
@@ -70,7 +95,10 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
                   <SDSpinner size={5} color="blue"></SDSpinner>
                 </div>
               ) : (
-                <SDSelect disabled={!isDateSelected}>
+                <SDSelect
+                  disabled={!isDateSelected}
+                  onChange={handleSelectChange}
+                >
                   <option value="all">همه</option>
                   {titles.map((title, index) => (
                     <option key={index} value={title}>
@@ -78,6 +106,7 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
                     </option>
                   ))}
                 </SDSelect>
+
               )}
             </div>
           </div>
@@ -85,7 +114,12 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
             <label htmlFor="search" className="pl-1 text-sm">
               جستجو:
             </label>
-            <SDTooltip content="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر" trigger="hover" placement="bottom" className="flex self-end">
+            <SDTooltip
+              content="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر"
+              trigger="hover"
+              placement="bottom"
+              className="flex self-end"
+            >
               <div className="mr-1 w-60">
                 <SearchInput
                   id="search"
@@ -99,7 +133,7 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default TicketsReportHeader
+export default TicketsReportHeader;
