@@ -10,7 +10,7 @@ import { BaseResponse } from '../../../../models/shared.models';
 import { SkyDiveEvent } from '../../../../models/skyDiveEvents.models';
 
 interface TicketsReportHeaderProps {
-  onGetReport: (id: string) => void;
+  onGetReport: (id: string, searchTerm: string) => void;
 }
 
 const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }) => {
@@ -22,7 +22,7 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
   const [selectedOptionId, setSelectedOptionId] = useState<string>('');
 
   const handleGetReport = () => {
-    onGetReport(selectedOptionId);
+    onGetReport(selectedOptionId, searchTerm);
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,7 +73,6 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
     <>
       <div className="flex justify-between gap-4 xl:basis-11/12">
         <div className="flex flex-wrap">
-
           <DateRangeFilter
             label="تاریخ"
             fromDate={minDate}
@@ -95,7 +94,7 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
                   disabled={!isDateSelected}
                   onChange={handleSelectChange}
                 >
-                  <option value="all">همه</option>
+                  <option>همه</option>
                   {titles.map((title, index) => (
                     <option key={index} value={title}>
                       {title}

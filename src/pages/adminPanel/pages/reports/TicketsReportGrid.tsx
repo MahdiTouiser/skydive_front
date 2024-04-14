@@ -7,12 +7,13 @@ import { BaseResponse } from '../../../../models/shared.models';
 
 interface TicketsReportGridProps {
     selectedId: string;
+    searchTerm: string
 }
 
 
-const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => {
+const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searchTerm }) => {
     const gridRef = useRef<GridRef>(null);
-
+    console.log(searchTerm);
     const { sendRequest } = useAPi<null, BaseResponse<TicketsReport[]>>();
     const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
@@ -89,22 +90,30 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => 
         },
     ])
 
-    const fetchEvents = useCallback<GridGetData<TicketsReport>>(
+    const fetchData = useCallback<GridGetData<TicketsReport>>(
         (gridParams, setRows) => {
+            const requestData: any = {
+                pageSize: gridParams.pageSize,
+                pageIndex: gridParams.pageIndex,
+                orderby: gridParams.sorts
+                    .map((item) => `${item.field} ${item.sort}`)
+                    .join(","),
+            };
+
+
+            if (selectedId !== "") {
+                requestData.eventsId = [selectedId];
+            }
+
+            if (searchTerm.trim() !== "") {
+                requestData.search = searchTerm.trim();
+            }
+
             sendRequest(
                 {
                     url: '/Reports/TicketsReport',
-                    params: {
-                        pageSize: gridParams.pageSize,
-                        pageIndex: gridParams.pageIndex,
-                        orderby: gridParams.sorts
-                            .map((item) => `${item.field} ${item.sort}`)
-                            .join(","),
-                    },
                     method: 'post',
-                    data: {
-                        eventsId: [selectedId]
-                    },
+                    data: requestData,
                 },
                 (response) => {
                     const result = response.content;
@@ -112,14 +121,16 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId }) => 
                     setRows(result, response.total);
                 },
             );
-        }, [sendRequest, selectedId]
+        }, [sendRequest, selectedId, searchTerm]
     );
 
+
+
     return (
-        <>
-            <Grid<TicketsReport> getData={fetchEvents} rowActions={{ remove: true }}
+        <div className='mt-8'>
+            <Grid<TicketsReport> getData={fetchData} rowActions={null}
                 colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
-        </>
+        </div>
     );
 };
 
