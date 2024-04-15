@@ -132,7 +132,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
         <>
             <div className='flex justify-end mt-8'>
                 <PdfPrintButtonWithSDButton
-                    pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}}`}
+                    pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}`}
                     fileName={'گزارش بلیت ها'}
                     method='put' />
             </div>
