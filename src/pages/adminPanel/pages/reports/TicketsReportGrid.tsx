@@ -111,7 +111,14 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
             if (searchTerm.trim() !== "") {
                 requestData.search = searchTerm.trim();
             }
-            setRequestData(requestData);
+            const filteredRequestData = { ...requestData };
+            delete filteredRequestData.pageSize;
+            delete filteredRequestData.pageIndex;
+            delete filteredRequestData.orderby;
+
+            setRequestData(filteredRequestData);
+
+
             sendRequest(
                 {
                     url: '/Reports/TicketsReport',
