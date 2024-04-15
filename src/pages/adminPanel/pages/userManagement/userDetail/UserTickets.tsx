@@ -1,19 +1,19 @@
 import { useCallback, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import Grid from "../../../../../components/shared/Grid/Grid";
 import {
   ColDef,
   GridGetData,
 } from "../../../../../components/shared/Grid/grid.types";
+import MultiplePdfPrintButton from "../../../../../components/shared/MultiplePdfPrintButton";
 import PdfPrintButton from "../../../../../components/shared/PdfPrintButton";
 import useAPi from "../../../../../hooks/useApi";
+import { BaseResponse } from "../../../../../models/shared.models";
 import {
   TicketStatuses,
   TicketStatusesPersianMap,
   UserTicket,
 } from "../../../../../models/tickets.models";
-import { BaseResponse } from "../../../../../models/shared.models";
-import Grid from "../../../../../components/shared/Grid/Grid";
-import MultiplePdfPrintButton from "../../../../../components/shared/multiplePdfPrintButton";
 
 const UserTickets: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
@@ -76,9 +76,8 @@ const UserTickets: React.FC = () => {
           <PdfPrintButton
             body={body}
             method="put"
-            pdfUrl={`${
-              import.meta.env.VITE_BASE_API_URL
-            }/Reservations/PrintTicket`}
+            pdfUrl={`${import.meta.env.VITE_BASE_API_URL
+              }/Reservations/PrintTicket`}
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
@@ -128,9 +127,8 @@ const UserTickets: React.FC = () => {
       <div>
         <MultiplePdfPrintButton
           body={selectedTicketsIds}
-          pdfUrl={`${
-            import.meta.env.VITE_BASE_API_URL
-          }/Reservations/PrintTicket`}
+          pdfUrl={`${import.meta.env.VITE_BASE_API_URL
+            }/Reservations/PrintTicket`}
           fileName={`لیست بلیت‌ها`}
           disable={!selectedTicketsIds?.length}
           className="mb-2"

@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
-import SDCard from "../../components/shared/Card";
-import useAPi from "../../hooks/useApi";
-import { UserTicket } from "../../models/tickets.models";
-import { BaseResponse } from "../../models/shared.models";
-import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
-import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
+import SDCard from "../../components/shared/Card";
+import Grid from "../../components/shared/Grid/Grid";
+import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
+import MultiplePdfPrintButton from "../../components/shared/MultiplePdfPrintButton";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
-import MultiplePdfPrintButton from "../../components/shared/multiplePdfPrintButton";
+import useAPi from "../../hooks/useApi";
+import { BaseResponse } from "../../models/shared.models";
+import { UserTicket } from "../../models/tickets.models";
 
 const MyTicketsPage: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
@@ -57,9 +57,8 @@ const MyTicketsPage: React.FC = () => {
           <PdfPrintButton
             body={body}
             method="put"
-            pdfUrl={`${
-              import.meta.env.VITE_BASE_API_URL
-            }/Reservations/PrintTicket`}
+            pdfUrl={`${import.meta.env.VITE_BASE_API_URL
+              }/Reservations/PrintTicket`}
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
@@ -92,9 +91,8 @@ const MyTicketsPage: React.FC = () => {
       <div className="py-5 md:px-8">
         <MultiplePdfPrintButton
           body={selectedTicketsIds}
-          pdfUrl={`${
-            import.meta.env.VITE_BASE_API_URL
-          }/Reservations/PrintTicket`}
+          pdfUrl={`${import.meta.env.VITE_BASE_API_URL
+            }/Reservations/PrintTicket`}
           fileName={`لیست بلیت‌ها`}
           disable={!selectedTicketsIds?.length}
           className="mb-2"

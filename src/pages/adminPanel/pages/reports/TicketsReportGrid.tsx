@@ -1,20 +1,21 @@
 import { useCallback, useRef, useState } from 'react';
 import Grid from '../../../../components/shared/Grid/Grid';
 import { ColDef, GridGetData, GridRef } from '../../../../components/shared/Grid/grid.types';
+import PdfPrintButtonWithSDButton from '../../../../components/shared/PdfPrintButtonWithSDButton';
 import useAPi from '../../../../hooks/useApi';
 import { TicketsReport } from '../../../../models/reports.models';
 import { BaseResponse } from '../../../../models/shared.models';
 
 interface TicketsReportGridProps {
-    selectedId: string;
+    selectedId: string
     searchTerm: string
 }
 
 
 const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searchTerm }) => {
     const gridRef = useRef<GridRef>(null);
-    console.log(searchTerm);
     const { sendRequest } = useAPi<null, BaseResponse<TicketsReport[]>>();
+    const [printId, setPrintId] = useState('');
     const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
             field: 'eventCode',
@@ -92,6 +93,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
 
     const fetchData = useCallback<GridGetData<TicketsReport>>(
         (gridParams, setRows) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const requestData: any = {
                 pageSize: gridParams.pageSize,
                 pageIndex: gridParams.pageIndex,
@@ -117,8 +119,8 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
                 },
                 (response) => {
                     const result = response.content;
-                    console.log(result);
                     setRows(result, response.total);
+                    setPrintId(response.message)
                 },
             );
         }, [sendRequest, selectedId, searchTerm]
@@ -127,10 +129,20 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
 
 
     return (
-        <div className='mt-8'>
-            <Grid<TicketsReport> getData={fetchData} rowActions={null}
-                colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
-        </div>
+        <>
+            <div className='flex justify-end mt-8'>
+                <PdfPrintButtonWithSDButton
+                    pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}}`}
+                    fileName={'گزارش بلیت ها'}
+                    method='put' />
+            </div>
+
+
+            <div className='mt-2'>
+                <Grid<TicketsReport> getData={fetchData} rowActions={null} colDefs={colDefs} ref={gridRef} sorts={[{ field: 'eventDate', sort: 'desc' }]} />
+            </div>
+        </>
+
     );
 };
 

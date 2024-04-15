@@ -71,64 +71,66 @@ const TicketsReportHeader: React.FC<TicketsReportHeaderProps> = ({ onGetReport }
 
   return (
     <>
-      <div className="flex justify-between gap-4 xl:basis-11/12">
-        <div className="flex flex-wrap">
-          <DateRangeFilter
-            label="تاریخ"
-            fromDate={minDate}
-            toDate={maxDate}
-            onChangeFromDate={setMinDate}
-            onChangeToDate={setMaxDate}
-          />
-        </div>
-        <div className="flex">
-          <div className="mr-4 flex items-center pb-2">
-            <label className="pl-1 text-sm"> عنوان رویداد :</label>
-            <div className="mr-1">
-              {isPending ? (
-                <div className="flex justify-center">
-                  <SDSpinner size={5} color="blue"></SDSpinner>
-                </div>
-              ) : (
-                <SDSelect
-                  disabled={!isDateSelected}
-                  onChange={handleSelectChange}
-                >
-                  <option>همه</option>
-                  {titles.map((title, index) => (
-                    <option key={index} value={title}>
-                      {title}
-                    </option>
-                  ))}
-                </SDSelect>
+      <div className='border-b border-b-gray'>
+        <div className="flex justify-between gap-4 xl:basis-11/12">
+          <div className="flex flex-wrap">
+            <DateRangeFilter
+              label="تاریخ"
+              fromDate={minDate}
+              toDate={maxDate}
+              onChangeFromDate={setMinDate}
+              onChangeToDate={setMaxDate}
+            />
+          </div>
+          <div className="flex">
+            <div className="mr-4 flex items-center pb-2">
+              <label className="pl-1 text-sm"> عنوان رویداد :</label>
+              <div className="mr-1">
+                {isPending ? (
+                  <div className="flex justify-center">
+                    <SDSpinner size={5} color="blue"></SDSpinner>
+                  </div>
+                ) : (
+                  <SDSelect
+                    disabled={!isDateSelected}
+                    onChange={handleSelectChange}
+                  >
+                    <option>همه</option>
+                    {titles.map((title, index) => (
+                      <option key={index} value={title}>
+                        {title}
+                      </option>
+                    ))}
+                  </SDSelect>
 
-              )}
-            </div>
-          </div>
-          <div className="mr-4 flex items-center justify-center pb-2">
-            <label htmlFor="search" className="pl-1 text-sm">
-              جستجو:
-            </label>
-            <SDTooltip
-              content="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر"
-              trigger="hover"
-              placement="bottom"
-              className="flex self-end"
-            >
-              <div className="mr-1 w-60">
-                <SearchInput
-                  id="search"
-                  onSubmit={onSearchTermChange}
-                  searchTerm={searchTerm}
-                  placeholder="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر "
-                />
+                )}
               </div>
-            </SDTooltip>
-          </div>
-          <div className="flex items-center justify-center pb-2 mr-8">
-            <SDButton color="success" onClick={handleGetReport} disabled={!isDateSelected || isPending}>
-              تهیه گزارش
-            </SDButton>
+            </div>
+            <div className="mr-4 flex items-center justify-center pb-2">
+              <label htmlFor="search" className="pl-1 text-sm">
+                جستجو:
+              </label>
+              <SDTooltip
+                content="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر"
+                trigger="hover"
+                placement="bottom"
+                className="flex self-end"
+              >
+                <div className="mr-1 w-60">
+                  <SearchInput
+                    id="search"
+                    onSubmit={onSearchTermChange}
+                    searchTerm={searchTerm}
+                    placeholder="نام رویداد ، تاریخ پرواز ، شماره بلیت ، نوع بلیت ، نام و نام خانوادگی ، کد ملی ، کد کاربر "
+                  />
+                </div>
+              </SDTooltip>
+            </div>
+            <div className="flex items-center justify-center pb-2 mr-8">
+              <SDButton color="success" onClick={handleGetReport} disabled={!isDateSelected || isPending}>
+                تهیه گزارش
+              </SDButton>
+            </div>
           </div>
         </div>
       </div>

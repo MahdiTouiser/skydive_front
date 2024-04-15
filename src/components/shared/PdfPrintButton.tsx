@@ -1,4 +1,4 @@
-import useAPi from "../../hooks/useApi";
+import useApi from "../../hooks/useApi";
 import { printResponse } from "../../utils/shared";
 import SDSpinner from "./Spinner";
 
@@ -7,6 +7,7 @@ interface PdfPrintButtonProps {
   fileName: string;
   method?: string;
   body?: string[];
+  color?: string;
 }
 
 const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
@@ -14,8 +15,9 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
   fileName,
   method = "get",
   body,
+  color,
 }) => {
-  const { sendRequest, isPending } = useAPi<string[], Blob>();
+  const { sendRequest, isPending } = useApi<string[], Blob>();
   const handlePrint = () => {
     sendRequest(
       {
@@ -34,7 +36,7 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
     <>
       {isPending && <SDSpinner color="blue"></SDSpinner>}
       {!isPending && (
-        <button onClick={handlePrint} className="text-cyan-600">
+        <button onClick={handlePrint} className={color ? color : "text-cyan-600"}>
           چاپ
         </button>
       )}

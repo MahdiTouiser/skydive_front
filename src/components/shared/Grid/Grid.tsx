@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Table } from "flowbite-react";
 import {
-  useState,
-  useEffect,
-  useCallback,
-  forwardRef,
   ForwardedRef,
+  forwardRef,
+  useCallback,
+  useEffect,
   useImperativeHandle,
-  useRef
+  useRef,
+  useState
 } from "react";
+import ReactPaginate from "react-paginate";
+import { SelectPageEvent } from "../../../models/shared.models";
+import SDSpinner from "../Spinner";
+import GridHeaderComponent from "./GridHeaderComponent";
+import GridRow from "./GridRow";
 import {
   ColDef,
   ColHeader,
@@ -16,16 +21,11 @@ import {
   GridGetData,
   GridParams,
   GridRef,
-  GridRowModel,
   GridRowActions,
+  GridRowModel,
   GridSortItem,
   SortStateType,
 } from "./grid.types";
-import ReactPaginate from "react-paginate";
-import { SelectPageEvent } from "../../../models/shared.models";
-import SDSpinner from "../Spinner";
-import GridHeaderComponent from "./GridHeaderComponent";
-import GridRow from "./GridRow";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
   data?: T[];
@@ -79,11 +79,11 @@ function MainGrid<T = any>(
   const [isPending, setIsPending] = useState<boolean>(false);
   const [gridSorts, setGridSorts] = useState<GridSortItem[]>(sorts);
   const selectedItemsRef = useRef<T[]>();
-  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
+  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[], selectedItem: T[]) => {
     const rows: GridRowModel[] = items.map((item) => {
-      const row =  new GridRowModel<T>(item, colDefs);
+      const row = new GridRowModel<T>(item, colDefs);
       const castedIdField = idField as keyof T;
-      const wasSelected = selectedItem.some(selected=>selected[castedIdField] === item[castedIdField])
+      const wasSelected = selectedItem.some(selected => selected[castedIdField] === item[castedIdField])
       row.isSelected = wasSelected;
       return row
     });
@@ -92,23 +92,23 @@ function MainGrid<T = any>(
   }, [idField]);
 
   const loadGrid = useCallback(
-    (gridParams?: GridParams,selectedItems?:T[]) => {
+    (gridParams?: GridParams, selectedItems?: T[]) => {
       if (data) {
-        makeGridRows(data, colDefs,selectedItems || []);
+        makeGridRows(data, colDefs, selectedItems || []);
       } else if (getData) {
         setIsPending(true);
         const isRefreshing = gridParams === undefined;
         const params: GridParams = isRefreshing
           ? {
-              pageIndex: 1,
-              pageSize: pageSize === null ? 100000 : pageSize,
-              sorts: sorts,
-            }
+            pageIndex: 1,
+            pageSize: pageSize === null ? 100000 : pageSize,
+            sorts: sorts,
+          }
           : gridParams;
         getData(
           params,
           (items: T[], total?: number) => {
-            makeGridRows(items, colDefs,selectedItems || []);
+            makeGridRows(items, colDefs, selectedItems || []);
             if (pageSize && total) {
               setPageCount(Math.ceil(total / pageSize));
             }
@@ -150,7 +150,7 @@ function MainGrid<T = any>(
           pageIndex: event.selected + 1,
           pageSize: pageSize,
           sorts: gridSorts,
-        },selectedItemsRef.current);
+        }, selectedItemsRef.current);
       }
     }
   };
@@ -181,7 +181,7 @@ function MainGrid<T = any>(
         pageIndex: selectedPage + 1,
         pageSize: pageSize === null ? 100000 : pageSize,
         sorts: newSorts,
-      },selectedItemsRef.current);
+      }, selectedItemsRef.current);
       return newSorts;
     });
   };
@@ -189,18 +189,18 @@ function MainGrid<T = any>(
   const onRowSelectedChange = (row: GridRowModel, checked: boolean) => {
     row.isSelected = checked;
     // setSelectedItems((prev) => {
-      const newItems = selectedItemsRef.current ? [...selectedItemsRef.current] : [];
-      const index = newItems.findIndex(
-        (item) => item[idField as keyof T] === row.data[idField]
-      );
-      if (checked && index === -1) {
-        newItems.push(row.data);
-      }
-      if (!checked && index !== -1) {
-        newItems.splice(index, 1);
-      }
-      onSelectionChange && onSelectionChange(newItems);
-      selectedItemsRef.current = newItems;
+    const newItems = selectedItemsRef.current ? [...selectedItemsRef.current] : [];
+    const index = newItems.findIndex(
+      (item) => item[idField as keyof T] === row.data[idField]
+    );
+    if (checked && index === -1) {
+      newItems.push(row.data);
+    }
+    if (!checked && index !== -1) {
+      newItems.splice(index, 1);
+    }
+    onSelectionChange && onSelectionChange(newItems);
+    selectedItemsRef.current = newItems;
     // });
   };
 
@@ -218,7 +218,7 @@ function MainGrid<T = any>(
   }, [gridSorts, colDefs]);
 
   useEffect(() => {
-    loadGrid(undefined,selectedItemsRef.current);
+    loadGrid(undefined, selectedItemsRef.current);
   }, [loadGrid]);
 
   useEffect(() => {
@@ -229,7 +229,7 @@ function MainGrid<T = any>(
     refresh() {
       loadGrid();
     },
-    getSelection(){
+    getSelection() {
       return selectedItemsRef.current || []
     }
   }));

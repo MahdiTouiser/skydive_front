@@ -7,6 +7,7 @@ const TicketsReport = () => {
   const [selectedId, setSelectedId] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+
   const getReport = (id: string, searchTerm: string) => {
     setSelectedId(id);
     setSearchTerm(searchTerm)
