@@ -16,6 +16,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
     const gridRef = useRef<GridRef>(null);
     const { sendRequest } = useAPi<null, BaseResponse<TicketsReport[]>>();
     const [printId, setPrintId] = useState('');
+    const [requestData, setRequestData] = useState<any>(null);
     const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
             field: 'eventCode',
@@ -110,7 +111,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
             if (searchTerm.trim() !== "") {
                 requestData.search = searchTerm.trim();
             }
-
+            setRequestData(requestData);
             sendRequest(
                 {
                     url: '/Reports/TicketsReport',
@@ -131,11 +132,25 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
     return (
         <>
             <div className='flex justify-end mt-8'>
-                <PdfPrintButtonWithSDButton
-                    pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}`}
-                    fileName={'گزارش بلیت ها'}
-                    method='put' />
+                <div className='ml-5'>
+                    <PdfPrintButtonWithSDButton
+                        pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/TicketsReport`}
+                        body={requestData}
+                        fileName={'گزارش بلیت ها'}
+                        method='post'
+                        inputText='چاپ' />
+                </div>
+                <div>
+                    <PdfPrintButtonWithSDButton
+                        pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}`}
+                        fileName={'گزارش بلیت ها'}
+                        method='put'
+                        color='success'
+                        inputText='خروجی اکسل' />
+                </div>
             </div>
+
+
 
 
             <div className='mt-2'>

@@ -9,6 +9,7 @@ interface PdfPrintButtonProps {
     method?: string;
     body?: string[];
     color?: string;
+    inputText: string
 }
 
 const PdfPrintButtonWithSDButton: React.FC<PdfPrintButtonProps> = ({
@@ -16,6 +17,8 @@ const PdfPrintButtonWithSDButton: React.FC<PdfPrintButtonProps> = ({
     fileName,
     method = "get",
     body,
+    color,
+    inputText
 }) => {
     const { sendRequest, isPending } = useApi<string[], Blob>();
     const handlePrint = () => {
@@ -36,8 +39,8 @@ const PdfPrintButtonWithSDButton: React.FC<PdfPrintButtonProps> = ({
         <>
             {isPending && <SDSpinner color="blue"></SDSpinner>}
             {!isPending && (
-                <SDButton onClick={handlePrint} className='text-white' color='primary2'>
-                    چاپ
+                <SDButton onClick={handlePrint} className='text-white' color={color ? 'success' : 'primary2'}>
+                    {inputText}
                 </SDButton>
             )}
         </>
