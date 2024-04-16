@@ -1,5 +1,7 @@
+import React from "react";
 import useApi from "../../hooks/useApi";
 import { printResponse } from "../../utils/shared";
+import SDButton from "./Button";
 import SDSpinner from "./Spinner";
 
 interface PdfPrintButtonProps {
@@ -8,6 +10,8 @@ interface PdfPrintButtonProps {
   method?: string;
   body?: string[];
   color?: string;
+  useSDButton: boolean;
+  inputText?: string;
 }
 
 const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
@@ -16,6 +20,8 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
   method = "get",
   body,
   color,
+  useSDButton = false,
+  inputText = "چاپ",
 }) => {
   const { sendRequest, isPending } = useApi<string[], Blob>();
   const handlePrint = () => {
@@ -34,11 +40,26 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
 
   return (
     <>
-      {isPending && <SDSpinner color="blue"></SDSpinner>}
+      {isPending && <SDSpinner color="blue" />}
       {!isPending && (
-        <button onClick={handlePrint} className={color ? color : "text-cyan-600"}>
-          چاپ
-        </button>
+        <>
+          {useSDButton ? (
+            <SDButton
+              onClick={handlePrint}
+              className="text-white"
+              color={color ? "success" : "primary2"}
+            >
+              {inputText}
+            </SDButton>
+          ) : (
+            <button
+              onClick={handlePrint}
+              className={color ? color : "text-cyan-600"}
+            >
+              {inputText}
+            </button>
+          )}
+        </>
       )}
     </>
   );
