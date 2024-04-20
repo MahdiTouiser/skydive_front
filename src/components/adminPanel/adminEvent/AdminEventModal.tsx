@@ -1,19 +1,18 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import useAPi from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared.models";
+import { AdminEventModalProps, NewEvent, SkyDiveEvent } from "../../../models/skyDiveEvents.models";
 import SDButton from "../../shared/Button";
 import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
 import SDModal from "../../shared/Modal/Modal";
 import RadioButton from "../../shared/RadioButton";
-import SDTextInput from "../../shared/TextInput";
-import { useEffect, useState } from "react";
-import { NewEvent, SkyDiveEvent } from "../../../models/skyDiveEvents.models";
-import { AdminEventModalProps } from "../../../models/skyDiveEvents.models";
-import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
-import SDSpinner from "../../shared/Spinner";
-import { toast } from "react-toastify";
 import SDSelect from "../../shared/Select";
+import SDSpinner from "../../shared/Spinner";
+import SDTextInput from "../../shared/TextInput";
 
 const AdminEventModal: React.FC<AdminEventModalProps> = ({
   eventStatusData,

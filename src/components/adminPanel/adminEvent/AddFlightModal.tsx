@@ -1,18 +1,18 @@
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import SDModal from "../../shared/Modal/Modal";
+import { toast } from "react-toastify";
+import useAPi from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared.models";
 import {
   AddFlightRequest,
   SkyDiveEventTicketType,
 } from "../../../models/skyDiveEvents.models";
-import SDLabel from "../../shared/Label";
-import SDTextInput from "../../shared/TextInput";
-import { useEffect, useState } from "react";
-import SDSelect from "../../shared/Select";
 import SDButton from "../../shared/Button";
-import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
+import SDLabel from "../../shared/Label";
+import SDModal from "../../shared/Modal/Modal";
+import SDSelect from "../../shared/Select";
 import SDSpinner from "../../shared/Spinner";
-import { toast } from "react-toastify";
+import SDTextInput from "../../shared/TextInput";
 
 interface AddFlightModalProps {
   dayId: string;
@@ -131,7 +131,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
             return (
               prev +
               currentItem.qty *
-                getCapacityById(tickeTypeResponse.content, currentItem.typeId)
+              getCapacityById(tickeTypeResponse.content, currentItem.typeId)
             );
           }
           return prev;
@@ -158,11 +158,10 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                 <p>-</p>
               ) : (
                 <p
-                  className={`${
-                    Number(totalCapacity) > 0
-                      ? "text-green-500"
-                      : "text-red-600"
-                  }  ltr`}
+                  className={`${Number(totalCapacity) > 0
+                    ? "text-green-500"
+                    : "text-red-600"
+                    }  ltr`}
                 >
                   {totalCapacity}
                 </p>
