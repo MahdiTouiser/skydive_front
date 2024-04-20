@@ -3,6 +3,7 @@ import { AiOutlinePrinter } from "react-icons/ai";
 import { ReactToPrint } from "react-to-print";
 import useApi from "../../hooks/useApi";
 import { TicketsReport } from "../../models/reports.models";
+import { printResponse } from "../../utils/shared";
 import SDButton from "./Button";
 import Grid from "./Grid/Grid";
 import { ColDef } from "./Grid/grid.types";
@@ -12,7 +13,8 @@ interface PdfPrintButtonProps {
   pdfUrl: string;
   method?: string;
   body?: string[];
-  useSDButton: boolean;
+  fileName?: string
+  useSDButton?: boolean;
   inputText?: string;
 }
 
@@ -20,6 +22,7 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
   pdfUrl,
   method = "get",
   body,
+  fileName = "",
   useSDButton = false,
   inputText = "چاپ",
 }) => {
@@ -96,7 +99,7 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
         method: method,
         data: body,
       },
-      (response) => setGridData(response.content)
+      (response: any) => { if (useSDButton) { setGridData(response.content) } else { printResponse(fileName, response) } }
     );
   };
 
@@ -105,11 +108,9 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
       {useSDButton ? (
         <ReactToPrint
           trigger={() => (
-            <div>
+            <div className="flex justify-center items-center text-center">
               {isPending ? (
-                <div className="flex justify-center align-middle">
-                  <SDSpinner color="blue" />
-                </div>
+                <SDSpinner color="blue" />
               ) : (
                 <SDButton onClick={handlePrint} color="primary2" className="py-1/2">
                   <span className="ml-2">
