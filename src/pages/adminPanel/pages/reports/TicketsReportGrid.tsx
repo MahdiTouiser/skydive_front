@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from 'react';
-import { ReactToPrint } from 'react-to-print';
 import ExcelDownloadButton from '../../../../components/shared/ExcelDownloadButton';
 import Grid from '../../../../components/shared/Grid/Grid';
 import { ColDef, GridGetData, GridRef } from '../../../../components/shared/Grid/grid.types';
@@ -18,6 +17,7 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
     const gridRef = useRef<GridRef>(null);
     const { sendRequest } = useAPi<null, BaseResponse<TicketsReport[]>>();
     const [printId, setPrintId] = useState('');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [requestData, setRequestData] = useState<any>(null);
     const [colDefs] = useState<ColDef<TicketsReport>[]>([
         {
@@ -140,24 +140,16 @@ const TicketsReportGrid: React.FC<TicketsReportGridProps> = ({ selectedId, searc
 
     return (
         <>
-            <ReactToPrint
-                trigger={() => {
-                    return <button>Print</button>
-
-                }}
-
-            />
             <div className='flex justify-end mt-8'>
                 <div className='ml-5'>
                     <PdfPrintButton
                         pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/Reports/TicketsReport`}
                         body={requestData}
-                        fileName={'گزارش بلیت ها'}
                         method='post'
                         inputText='چاپ'
                         useSDButton={true} />
                 </div>
-                <div>
+                <div className='flex flex-col align-middle justify-center'>
                     <ExcelDownloadButton
                         url={`${import.meta.env.VITE_BASE_API_URL}/Reports/PrintTicketsReport/${printId}`}
                         fileName={'گزارش بلیت ها'}
